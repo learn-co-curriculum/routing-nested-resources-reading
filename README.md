@@ -136,11 +136,7 @@ Let's update `index` and `show` for the new routes:
   end
 
   def show
-    if params[:author_id]
       @post = Post.find(params[:id])
-    else
-      @post = Post.find(params[:id])
-    end
   end
 
   def new
