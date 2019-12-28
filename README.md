@@ -146,7 +146,9 @@ We added a conditional to the `posts#index` action to account for whether the us
 
 Where is `params[:author_id]` coming from? Rails provides it for us through the nested route, so we don't have to worry about a collision with the `:id` parameter that `posts#show` is looking for. Rails takes the parent resource's name and appends `_id` to it for a nice, predictable way to find the parent resource's ID.
 
-But, wait– we didn't make a single change to the `posts#show` action. What about the new `/authors/:id/posts/:id` route that we added? Remember, the point of nesting our resources is to DRY up our code. We had to create a conditional for the `posts#index` action because it renders *different* sets of posts depending on the path, `/authors/:id/posts` or `/posts`. Conversely, the `posts#show` route is going to render the *same* information — data concerning a single post — regardless of whether it is accessed via `/authors/:id/posts/:id` or `/posts/:id`.
+**Note:** Because we are now nesting our routes instead of writing them out explicitly in `routes.rb`, their URLs have changed from `/authors/:id/posts` and `/authors/:id/posts/:post_id` to `/authors/:author_id/posts` and `/authors/:author_id/posts/:id`, respectively.
+
+But, wait– we didn't make a single change to the `posts#show` action. What about the new `/authors/:author_id/posts/:id` route that we added? Remember, the point of nesting our resources is to DRY up our code. We had to create a conditional for the `posts#index` action because it renders *different* sets of posts depending on the path, `/authors/:author_id/posts` or `/posts`. Conversely, the `posts#show` route is going to render the *same* information — data concerning a single post — regardless of whether it is accessed via `/authors/:author_id/posts/:id` or `/posts/:id`.
 
 For good measure, let's go into our `authors_controller.rb` and delete the two actions (`post` and `posts_index`) that we added above so that it looks like this:
 
@@ -218,7 +220,7 @@ In `posts/index.html.erb`, we already show the author's name, so let's add a lin
 
   ...
 ```
-Let's reload `/posts` and click on an author name. We should be taken to `/authors/id/posts`.
+Let's reload `/posts` and click on an author name. We should be taken to `/authors/:author_id/posts`.
 
 Great! Now our URLs properly reflect the relationship of our resources and read almost like an English sentence: `authors/1/posts` = "author number one's posts."
 
