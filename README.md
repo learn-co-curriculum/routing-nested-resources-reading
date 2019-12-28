@@ -63,7 +63,7 @@ And to handle our new filtering routes, we'll need to make some changes in our `
   def posts_index
     @author = Author.find(params[:id])
     @posts = @author.posts
-    render template: 'posts/index'
+    render 'posts/index'
   end
 
   def post
@@ -72,11 +72,11 @@ And to handle our new filtering routes, we'll need to make some changes in our `
     # Note that because ids are unique by table we can go directly to
     # Post.find — no need for @author.posts.find...
     @post = Post.find(params[:post_id])
-    render template: 'posts/show'
+    render 'posts/show'
   end
 ```
 
-**Advanced:** While a controller action would normally implicitly render a template with the same name as the method, in this case we want to leverage the templates we're already using for posts, so we call `render` explicitly with a template path. Because we're telling `render` that we're using a `template`, we don't need to include the `.html.erb` extensions. Rails figures that out for us.
+**Advanced:** While a controller action would normally implicitly render a template with the same name as the method, in this case we want to leverage the templates we're already using for posts, so we call `render` explicitly with a template path. (Note that in previous versions of Rails, you had to do this with `render template: 'posts/index'` and `render template: 'posts/show'`, respectively. You can still do this, but it's no longer required.)
 
 If we go back to our blog and try to browse to `/authors/1/posts`, we should see the posts for that author. And then if we try `/authors/1/posts/1`, we should see that post.
 
