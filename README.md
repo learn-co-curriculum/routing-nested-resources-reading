@@ -182,7 +182,6 @@ Once you become accustomed to breaking it down in that way, it's pretty straight
 
 ```bash
       Prefix Verb  URI Pattern                             Controller#Action
-  test_index GET   /test/index(.:format)                   test#index
 author_posts GET   /authors/:author_id/posts(.:format)     posts#index
  author_post GET   /authors/:author_id/posts/:id(.:format) posts#show
       author GET   /authors/:id(.:format)                  authors#show
