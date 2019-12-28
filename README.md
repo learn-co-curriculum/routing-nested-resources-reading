@@ -80,7 +80,7 @@ And to handle our new filtering routes, we'll need to make some changes in our `
 
 If we go back to our blog and try to browse to `/authors/1/posts`, we should see the posts for that author. And then if we try `/authors/1/posts/1`, we should see that post.
 
-**Note:** If your IDs are different and you are having trouble with the URLs, try running `rake db:reset` to reset your IDs to the defaults in the seed file.
+**Note:** If your IDs are different and you are having trouble with the URLs, try running `rake db:reset` to reset your IDs to the defaults in the seed file. If you get something like an `ActiveRecord::NoEnvironmentInSchemaError`, run `rails db:environment:set RAILS_ENV=development`. The `rake db:reset` command should now work.
 
 We did it! We have much nicer URLs now. Are we done? Of course not.
 
