@@ -63,7 +63,7 @@ And to handle our new filtering routes, we'll need to make some changes in our `
   def posts_index
     @author = Author.find(params[:id])
     @posts = @author.posts
-    render template: 'posts/index'
+    render 'posts/index'
   end
 
   def post
@@ -72,15 +72,15 @@ And to handle our new filtering routes, we'll need to make some changes in our `
     # Note that because ids are unique by table we can go directly to
     # Post.find — no need for @author.posts.find...
     @post = Post.find(params[:post_id])
-    render template: 'posts/show'
+    render 'posts/show'
   end
 ```
 
-**Advanced:** While a controller action would normally implicitly render a template with the same name as the method, in this case we want to leverage the templates we're already using for posts, so we call `render` explicitly with a template path. Because we're telling `render` that we're using a `template`, we don't need to include the `.html.erb` extensions. Rails figures that out for us.
+**Advanced:** While a controller action would normally implicitly render a template with the same name as the method, in this case we want to leverage the templates we're already using for posts, so we call `render` explicitly with a template path. (Note that in previous versions of Rails, you had to do this with `render template: 'posts/index'` and `render template: 'posts/show'`, respectively. You can still do this, but it's no longer required.)
 
 If we go back to our blog and try to browse to `/authors/1/posts`, we should see the posts for that author. And then if we try `/authors/1/posts/1`, we should see that post.
 
-**Note:** If your IDs are different and you are having trouble with the URLs, try running `rake db:reset` to reset your IDs to the defaults in the seed file.
+**Note:** If your IDs are different and you are having trouble with the URLs, try running `rake db:reset` to reset your IDs to the defaults in the seed file. If you get something like an `ActiveRecord::NoEnvironmentInSchemaError`, run `rails db:environment:set RAILS_ENV=development`. The `rake db:reset` command should now work.
 
 We did it! We have much nicer URLs now. Are we done? Of course not.
 
@@ -146,7 +146,9 @@ We added a conditional to the `posts#index` action to account for whether the us
 
 Where is `params[:author_id]` coming from? Rails provides it for us through the nested route, so we don't have to worry about a collision with the `:id` parameter that `posts#show` is looking for. Rails takes the parent resource's name and appends `_id` to it for a nice, predictable way to find the parent resource's ID.
 
-But, wait– we didn't make a single change to the `posts#show` action. What about the new `/authors/:id/posts/:id` route that we added? Remember, the point of nesting our resources is to DRY up our code. We had to create a conditional for the `posts#index` action because it renders *different* sets of posts depending on the path, `/authors/:id/posts` or `/posts`. Conversely, the `posts#show` route is going to render the *same* information — data concerning a single post — regardless of whether it is accessed via `/authors/:id/posts/:id` or `/posts/:id`.
+**Note:** Because we are now nesting our routes instead of writing them out explicitly in `routes.rb`, their URLs have changed from `/authors/:id/posts` and `/authors/:id/posts/:post_id` to `/authors/:author_id/posts` and `/authors/:author_id/posts/:id`, respectively.
+
+But, wait– we didn't make a single change to the `posts#show` action. What about the new `/authors/:author_id/posts/:id` route that we added? Remember, the point of nesting our resources is to DRY up our code. We had to create a conditional for the `posts#index` action because it renders *different* sets of posts depending on the path, `/authors/:author_id/posts` or `/posts`. Conversely, the `posts#show` route is going to render the *same* information — data concerning a single post — regardless of whether it is accessed via `/authors/:author_id/posts/:id` or `/posts/:id`.
 
 For good measure, let's go into our `authors_controller.rb` and delete the two actions (`post` and `posts_index`) that we added above so that it looks like this:
 
@@ -182,7 +184,6 @@ Once you become accustomed to breaking it down in that way, it's pretty straight
 
 ```bash
       Prefix Verb  URI Pattern                             Controller#Action
-  test_index GET   /test/index(.:format)                   test#index
 author_posts GET   /authors/:author_id/posts(.:format)     posts#index
  author_post GET   /authors/:author_id/posts/:id(.:format) posts#show
       author GET   /authors/:id(.:format)                  authors#show
@@ -219,7 +220,7 @@ In `posts/index.html.erb`, we already show the author's name, so let's add a lin
 
   ...
 ```
-Let's reload `/posts` and click on an author name. We should be taken to `/authors/id/posts`.
+Let's reload `/posts` and click on an author name. We should be taken to `/authors/:author_id/posts`.
 
 Great! Now our URLs properly reflect the relationship of our resources and read almost like an English sentence: `authors/1/posts` = "author number one's posts."
 
